@@ -171,13 +171,16 @@
               onsubmit="return prepareForm();">
             <h2>اطلب الآن</h2>
             <label for="name">الاسم الكامل</label>
-            <input type="text" id="name" placeholder="أدخل اسمك الكامل" required>
+            <!-- أضفنا الخاصية name لتضمين اسم العميل في البريد -->
+            <input type="text" id="name" name="name" placeholder="أدخل اسمك الكامل" required>
 
             <label for="phone">رقم الهاتف</label>
-            <input type="tel" id="phone" placeholder="أدخل رقم هاتفك" pattern="[0-9+\s-]{7,}" required>
+            <!-- أضفنا الخاصية name لتضمين رقم الهاتف في البريد -->
+            <input type="tel" id="phone" name="phone" placeholder="أدخل رقم هاتفك" pattern="[0-9+\s-]{7,}" required>
 
             <label for="city">اختر المنطقة</label>
-            <select id="city" required>
+            <!-- أضفنا الخاصية name لتضمين المدينة في البريد -->
+            <select id="city" name="city" required>
                 <option value="">اختر المنطقة...</option>
                 <option value="القدس">القدس</option>
                 <option value="الداخل">الداخل</option>
@@ -185,10 +188,12 @@
             </select>
 
             <label for="address">العنوان التفصيلي</label>
-            <textarea id="address" placeholder="أدخل عنوانك بالتفصيل (مثال: شارع، رقم المبنى، منطقة)" required></textarea>
+            <!-- أضفنا الخاصية name لتضمين العنوان في البريد -->
+            <textarea id="address" name="address" placeholder="أدخل عنوانك بالتفصيل (مثال: شارع، رقم المبنى، منطقة)" required></textarea>
 
             <label for="qty">الكمية</label>
-            <select id="qty">
+            <!-- أضفنا الخاصية name لتضمين الكمية في البريد -->
+            <select id="qty" name="qty">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
