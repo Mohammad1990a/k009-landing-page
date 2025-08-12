@@ -162,7 +162,13 @@
             <p>يعمل K009 بشكل مثالي في أي مكان سواء في السيارة، على المكتب أثناء الاجتماعات أو حتى في المطبخ لمشاهدة وصفات الطبخ.</p>
         </section>
 
-        <form class="order-form" id="orderForm" onsubmit="event.preventDefault(); sendOrder();">
+        <!--
+            تم تحديث النموذج ليستخدم خدمة FormSubmit. عند إرسال الطلب سيتم إرسال
+            البيانات إلى البريد الإلكتروني مباشرةً دون الحاجة إلى Google Sheets.
+        -->
+        <form class="order-form" id="orderForm"
+              action="https://formsubmit.co/mohammad.ssataali@gmail.com" method="POST"
+              onsubmit="return prepareForm();">
             <h2>اطلب الآن</h2>
             <label for="name">الاسم الكامل</label>
             <input type="text" id="name" placeholder="أدخل اسمك الكامل" required>
@@ -187,9 +193,14 @@
                 <option value="2">2</option>
                 <option value="3">3</option>
             </select>
+            <!-- حقول مخفية لإرسال بيانات إضافية (السعر، الإجمالي، اسم المنتج، موضوع البريد، واستجابة تلقائية) -->
+            <input type="hidden" id="unitPriceField" name="unit_price" value="">
+            <input type="hidden" id="totalPriceField" name="total_price" value="">
+            <input type="hidden" name="product" value="K009">
+            <input type="hidden" name="_subject" value="طلب جديد - حامل هاتف مغناطيسي K009">
+            <input type="hidden" name="_autoresponse" value="شكراً لطلبك! سيتم التواصل معك قريبًا لتأكيد الطلب.">
 
             <button type="submit">اطلب الآن</button>
-            <p id="confirmationMessage" style="color: green; display: none; margin-top: 10px; font-weight: bold;"></p>
         </form>
     </div>
 
@@ -198,54 +209,20 @@
     </footer>
 
     <script>
-        // تغيير هذا الرابط إلى رابط تطبيق الويب من Google Apps Script
-        const SHEETS_WEB_APP_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
-        const UNIT_PRICE = 89; // سعر القطعة في شيكل
-        const PRODUCT_NAME = "K009";
+        // سعر القطعة بالشيكل
+        const UNIT_PRICE = 89;
 
-        function sendOrder() {
-            const name = document.getElementById('name').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const city = document.getElementById('city').value;
-            const address = document.getElementById('address').value.trim();
-            const qty = parseInt(document.getElementById('qty').value, 10);
+        /**
+         * تُحضّر الحقول المخفية قبل إرسال النموذج. تُحسب الكمية والإجمالي وتُضاف إلى
+         * الحقول المخفية ليتم إرسالها إلى البريد عبر خدمة FormSubmit.
+         * هذه الدالة تُرجع true للسماح للنموذج بالإرسال.
+         */
+        function prepareForm() {
+            const qty = parseInt(document.getElementById('qty').value, 10) || 1;
             const totalPrice = UNIT_PRICE * qty;
-
-            if (!name || !phone || !city || !address) {
-                alert('يرجى تعبئة جميع الحقول المطلوبة.');
-                return;
-            }
-
-            const payload = {
-                name: name,
-                phone: phone,
-                city: city,
-                address: address,
-                qty: qty,
-                unit_price: UNIT_PRICE,
-                total_price: totalPrice,
-                product: PRODUCT_NAME,
-                referrer: document.referrer || window.location.href,
-                userAgent: navigator.userAgent,
-                source: 'landing_k009_v_final'
-            };
-            // إرسال إلى Google Sheets
-            fetch(SHEETS_WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            }).catch(error => {
-                console.error('Error sending order:', error);
-            });
-            // إظهار رسالة تأكيد للمستخدم
-            const msg = document.getElementById('confirmationMessage');
-            msg.textContent = `✔️ شكراً لك ${name}! تم إرسال طلبك بنجاح. سيتم التواصل معك قريباً.`;
-            msg.style.display = 'block';
-            // إعادة تعيين النموذج
-            document.getElementById('orderForm').reset();
+            document.getElementById('unitPriceField').value = UNIT_PRICE;
+            document.getElementById('totalPriceField').value = totalPrice;
+            return true;
         }
     </script>
 </body>
